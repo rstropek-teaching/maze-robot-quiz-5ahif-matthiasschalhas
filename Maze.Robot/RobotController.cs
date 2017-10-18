@@ -8,6 +8,8 @@ namespace Maze.Solver
     public class RobotController
     {
         private IRobot robot;
+        private bool reachedEnd;
+        private List<Point> listofPoints;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RobotController"/> class
@@ -17,6 +19,8 @@ namespace Maze.Solver
         {
             // Store robot for later use
             this.robot = robot;
+            this.reachedEnd = false;
+            this.listofPoints = new List<Point>();
         }
 
         /// <summary>
@@ -32,14 +36,67 @@ namespace Maze.Solver
         public void MoveRobotToExit()
         {
             // Here you have to add your code
-
-            // Trivial sample algorithm that can just move right
-            var reachedEnd = false;
             robot.ReachedExit += (_, __) => reachedEnd = true;
+            // Trivial sample algorithm that can just move right
+            directionCheck(0,0);
 
-            while (!reachedEnd)
+            if(reachedEnd == false)
             {
-                robot.Move(Direction.Right);
+                robot.HaltAndCatchFire();
+            }
+
+           
+        }
+
+        public void directionCheck(int x, int y)
+        {
+            // Prüft, ob der Punkt noch nicht vorgekommen ist und ob das Ende noch nicht erreicht wurde
+            if(this.listofPoints.Contains(new Point(x,y))== false && this.reachedEnd == false)
+            {
+                //Aufnahme der Punktes in die Liste
+                this.listofPoints.Add(new Point(x,y));
+                
+                //Prüft, ob das Ende noch nicht erreicht wird und ob es möglich ist nach rechts zu fahren
+                if (this.reachedEnd == false && this.robot.TryMove(Direction.Right)==true)
+                {
+                    directionCheck(x+1,y);
+                    if(this.reachedEnd == false)
+                    {
+                        robot.Move(Direction.Left);
+                    }
+                }
+
+                //Prüft, ob das Ende noch nicht erreicht wird und ob es möglich ist nach unten zu fahren
+                if (this.reachedEnd == false && this.robot.TryMove(Direction.Down) == true)
+                {
+                    directionCheck(x,y+1);
+                    if (this.reachedEnd == false)
+                    {
+                        robot.Move(Direction.Up);
+                    }
+                }
+
+                //Prüft, ob das Ende noch nicht erreicht wird und ob es möglich ist nach links zu fahren
+                if (this.reachedEnd == false && this.robot.TryMove(Direction.Left) == true)
+                {
+                    directionCheck(x-1,y);
+                    if (this.reachedEnd == false)
+                    {
+                        robot.Move(Direction.Right);
+                    }
+                }
+
+                //Prüft, ob das Ende noch nicht erreicht wird und ob es möglich ist nach oben zu fahren
+                if (this.reachedEnd == false && this.robot.TryMove(Direction.Up) == true)
+                {
+                    directionCheck(x,y-1);
+                    if (this.reachedEnd == false)
+                    {
+                        robot.Move(Direction.Down);
+                    }
+                }
+
+
             }
         }
     }
