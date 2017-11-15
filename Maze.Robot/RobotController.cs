@@ -1,4 +1,6 @@
 ﻿using Maze.Library;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace Maze.Solver
 {
@@ -44,10 +46,14 @@ namespace Maze.Solver
             {
                 robot.HaltAndCatchFire();
             }
+            
+            // Tip: Avoid multiple empty lines. This is generally considered bad
+            // coding style.
 
            
         }
 
+        // Tip: In C#, member names should start with an uppercase letter.
         public void directionCheck(int x, int y)
         {
             // Prüft, ob der Punkt noch nicht vorgekommen ist und ob das Ende noch nicht erreicht wurde
